@@ -1,8 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useConvexAuth } from "convex/react";
+import { Spinner } from "@/components/spinner";
+import Link from "next/link";
+import { SignInButton } from "@clerk/clerk-react";
 
 export const Heading = () => {
+  const { isLoading, isAuthenticated } = useConvexAuth();
   return (
     <div className="max-w-3xl space-y-4">
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold">
@@ -12,9 +17,27 @@ export const Heading = () => {
       <h3 className=" text-base sm:text-xl md:text-2xl font-medium">
         Jotion is connected workspace where <br /> better,faster Work happens.
       </h3>
-      <Button>
-        Enter Jotion <ArrowRight className="h-4 w-4 ml-2" />
-      </Button>
+      {isLoading && (
+        <div>
+          {" "}
+          <Spinner size="lg" />
+        </div>
+      )}
+      {!isLoading && isAuthenticated && (
+        <Button asChild>
+          <Link href="/documents">
+            Enter Jotion <ArrowRight className="h-4 w-4 ml-2" />
+          </Link>
+        </Button>
+      )}
+      {!isAuthenticated && !isLoading && (
+        <SignInButton mode="modal">
+          <Button>
+            Get Jotion Free
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </SignInButton>
+      )}
     </div>
   );
 };
